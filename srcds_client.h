@@ -11,7 +11,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <netinet/in.h>
-#include "metricd/util/return_code.h"
+#include "util/return_code.h"
 
 namespace fnordmetric {
 namespace sensor_valve_srcds {

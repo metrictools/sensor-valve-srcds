@@ -14,7 +14,7 @@
 #include <string.h>
 #include <regex>
 #include <iostream>
-#include "sensors/valve_srcds/srcds_client.h"
+#include "srcds_client.h"
 
 namespace fnordmetric {
 namespace sensor_valve_srcds {
