@@ -87,7 +87,7 @@ int main(int argc, const char** argv) {
   if (flags.isSet("version")) {
     std::cerr <<
         StringUtil::format(
-            "sensor_valve_srcds $0\n"
+            "sensor-valve-srcds $0\n"
             "Copyright (c) 2016, Paul Asmuth et al. Licensed under the Apache License v2.0.\n\n",
             PACKAGE_VERSION);
 
@@ -96,7 +96,7 @@ int main(int argc, const char** argv) {
 
   if (flags.isSet("help")) {
     std::cerr <<
-        "Usage: $ sensor_valve_srcds [OPTIONS]\n\n"
+        "Usage: $ sensor-valve-srcds [OPTIONS]\n\n"
         "   --srcds_addr <addr>         Address of the srcds server (e.g. localhost:27015)\n"
         "   --srcds_poll_interval <n>   Poll interval (default 1s)\n"
         "   --format <fmt>              Measurement format (text or JSON)\n"
