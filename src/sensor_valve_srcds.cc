@@ -11,10 +11,9 @@
 #include <unistd.h>
 #include <iostream>
 #include <map>
-#include "metricd/util/flagparser.h"
-#include "metricd/util/stringutil.h"
-#include "metricd/transport/statsd/statsd.h"
-#include "sensors/valve_srcds/srcds_client.h"
+#include "util/flagparser.h"
+#include "util/stringutil.h"
+#include "srcds_client.h"
 
 int main(int argc, const char** argv) {
   FlagParser flags;
@@ -34,7 +33,7 @@ int main(int argc, const char** argv) {
       "1");
 
   flags.defineFlag(
-      "metric_prefix",
+      "prefix",
       FlagParser::T_STRING,
       false,
       NULL,
@@ -85,16 +84,13 @@ int main(int argc, const char** argv) {
   }
 
   /* print help */
-  if (flags.isSet("help") || flags.isSet("version")) {
+  if (flags.isSet("version")) {
     std::cerr <<
         StringUtil::format(
             "sensor_valve_srcds $0\n"
-            "Part of the FnordMetric project (http://fnordmetric.io)\n"
-            "Copyright (c) 2016, Paul Asmuth, Laura Schlimmer et al. All rights reserved.\n\n",
-            FNORDMETRIC_VERSION);
-  }
+            "Copyright (c) 2016, Paul Asmuth et al. Licensed under the Apache License v2.0.\n\n",
+            PACKAGE_VERSION);
 
-  if (flags.isSet("version")) {
     return 0;
   }
 
@@ -103,11 +99,12 @@ int main(int argc, const char** argv) {
         "Usage: $ sensor_valve_srcds [OPTIONS]\n\n"
         "   --srcds_addr <addr>         Address of the srcds server (e.g. localhost:27015)\n"
         "   --srcds_poll_interval <n>   Poll interval (default 1s)\n"
-        "   --series_id <str>           Set the series id for all metrics\n"
-        "   --metric_prefix <str>       Prefix all metric names with a string (e.g. 'gameserver.csgo.')\n"
-        "   --send_statsd <addr>        Send measurements via statsd/udp\n"
-        "   --send_jsonudp <addr>       Send measurements via json/udp\n"
-        "   --send_jsontcp <addr>       Send measurements via json/tcp\n"
+        "   --format <fmt>              Measurement format (text or JSON)\n"
+        "   --listen_http <addr>        Listen for http connections on this address\n"
+        "   --send_udp <addr>           Send measurements via UDP to this address\n"
+        "   --no_stdout                 Don't print statistics to stdout\n"
+        "   --label <k>=<v>             Add a labelfor all measurements\n"
+        "   --value <str>               Prefix all measurement names with a string (e.g. 'gameserver.csgo.')\n"
         "   -v, --verbose               Run in verbose mode\n"
         "   -?, --help                  Display this help text and exit\n"
         "   -V, --version               Display the version of this binary and exit";
@@ -136,22 +133,6 @@ int main(int argc, const char** argv) {
     }
   }
 
-  /* setup statsd client if enabled */
-  std::vector<std::unique_ptr<fnordmetric::statsd::StatsdEmitter>> statsd_trgts;
-  for (const auto& statsd_addr : flags.getStrings("send_statsd")) {
-    std::unique_ptr<fnordmetric::statsd::StatsdEmitter> statsd_emitter(
-        new fnordmetric::statsd::StatsdEmitter());
-
-    auto rc = statsd_emitter->connect(statsd_addr);
-    if (!rc.isSuccess()) {
-      std::cerr <<
-          "WARNING: statsd emittter error:" << rc.getMessage() << std::endl;
-      continue;
-    }
-
-    statsd_trgts.emplace_back(std::move(statsd_emitter));
-  }
-
   /* periodically poll for measurements */
   for (;; usleep(flags.getFloat("srcds_poll_interval") * 1000000)) {
     fnordmetric::sensor_valve_srcds::SRCDSInfo info;
@@ -168,25 +149,12 @@ int main(int argc, const char** argv) {
       m.first.insert(0, metric_prefix);
     }
 
-    /* if statsd output is enabled, deliver measurements via statsd */
-    for (const auto& statsd_emitter : statsd_trgts) {
-      for (const auto& m : measurements) {
-        statsd_emitter->enqueueSample(m.first, series_id, m.second);
-      }
-
-      auto statsd_rc = statsd_emitter->emitSamples();
-      if (!statsd_rc.isSuccess()) {
-        std::cerr <<
-            "WARNING: statsd send failed:" << rc.getMessage() << std::endl;
-      }
-    }
-
     /* print measurements to stdout if verbose*/
-    if (verbose) {
+    //if (verbose) {
       for (const auto& m : measurements) {
         std::cout << m.first << "=" << m.second << std::endl;
       }
-    }
+    //}
   }
 
   return 0;
