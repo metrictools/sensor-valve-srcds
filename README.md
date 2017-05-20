@@ -44,7 +44,7 @@ That's it. To see the data being collected run:
 
 ## Options
 
-    Usage: $ sensor_valve_srcds [OPTIONS]
+    Usage: $ sensor-valve-srcds [OPTIONS]
 
        --srcds_addr <addr>         Address of the srcds server (e.g. localhost:27015)
        --srcds_poll_interval <n>   Poll interval (default 1s)
