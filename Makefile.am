@@ -9,12 +9,12 @@ AM_CXXFLAGS = -std=c++0x -mno-omit-leaf-frame-pointer -fno-omit-frame-pointer -W
 AM_LDFLAGS = -lpthread
 
 sensor_valve_srcds_SOURCES = \
-    util/return_code.h \
-    util/stringutil.h \
-    util/stringutil_impl.h \
-    util/stringutil.cc \
-    srcds_client.h \
-    srcds_client.cc
+    src/util/return_code.h \
+    src/util/stringutil.h \
+    src/util/stringutil_impl.h \
+    src/util/stringutil.cc \
+    src/srcds_client.h \
+    src/srcds_client.cc
 
 #    sensor_valve_srcds.cc
 
