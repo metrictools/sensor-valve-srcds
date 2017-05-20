@@ -4,7 +4,7 @@ Valve Source Dedicated Service Sensor
 A simple program that collects statistics from a Source Dedicated Server and 
 reports them in text or JSON format via HTTP, UDP or on STDOUT.
 
-### Installation
+## Installation
 
 Clone this repository and run these commands:
 
@@ -14,14 +14,14 @@ Clone this repository and run these commands:
     $ sudo make install
 
 
-### Usage (standalone)
+## Usage (standalone)
 
 You can run a standalone sensor with this command (will report to STDOUT)
 
     ./sensor-valve-srcds --srcds_addr <srcds_server_host>:<srcds_server_port>
 
 
-### Usage (metrictools)
+## Usage (metrictools)
 
 To monitor a server with metrictools, add this configuration snippet to `/etc/metrictools/metrics.conf`.:
 
@@ -42,7 +42,7 @@ That's it. To see the data being collected run:
     $ metrictl list -l
 
 
-### Options
+## Options
 
     Usage: $ sensor_valve_srcds [OPTIONS]
 
@@ -59,7 +59,7 @@ That's it. To see the data being collected run:
        -V, --version               Display the version of this binary and exit
 
 
-### List of Metrics/Statistics
+## List of Metrics/Statistics
 
 The list of reported metrics are:
 
@@ -78,7 +78,7 @@ The list of reported metrics are:
 - vac_enabled
 
 
-### Supported Games
+## Supported Games
 
 The list of supported games include (all games on srcds should be supported):
 
